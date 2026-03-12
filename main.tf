@@ -120,23 +120,32 @@ resource "aws_security_group" "web_sg" {
   name        = "allow_web"
   description = "Allow HTTP and SSH traffic"
   vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow anyone to see the website
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"          # "-1" means ALL protocols
-    cidr_blocks = ["0.0.0.0/0"] # Allow the server to talk to the internet
-  }
-
   tags = {
     Name = "Web Security Group"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_http" {
+  security_group_id = aws_security_group.web_sg.id
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0" # Allow anyone to see the website
+
+  tags = {
+    Name = "Allow inbound Http"
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_all" {
+  security_group_id = aws_security_group.web_sg.id
+  from_port         = 0
+  to_port           = 0
+  ip_protocol       = "-1"        # "-1" means ALL protocols
+  cidr_ipv4         = "0.0.0.0/0" # Allow the server to talk to the internet
+
+  tags = {
+    Name = "Allow outbound All"
   }
 }
 
@@ -176,4 +185,28 @@ resource "aws_network_acl" "public_nacl" {
   }
 
   tags = { Name = "MainSubnetNACL" }
+}
+
+
+# Security Group Referencing
+
+# Database Security Group
+resource "aws_security_group" "db_sg" {
+  name        = "database-sg"
+  description = "Allow access to database"
+  vpc_id      = aws_vpc.main.id
+
+  tags = {
+    Name = "Database SG"
+  }
+
+}
+
+# THE MAGIC RULE: Allow Web SG to talk to DB SG
+resource "aws_vpc_security_group_ingress_rule" "web_to_db" {
+  security_group_id            = aws_security_group.db_sg.id
+  referenced_security_group_id = aws_security_group.web_sg.id # <--- The Magic
+  from_port                    = 5432                         # Port for PostgreSQL
+  to_port                      = 5432
+  ip_protocol                  = "tcp"
 }
