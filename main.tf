@@ -117,8 +117,9 @@ resource "aws_s3_bucket" "vpc_log_bucket" {
 
 #  Security Group (The server "Guest List")
 resource "aws_security_group" "web_sg" {
-  name   = "allow_web"
-  vpc_id = aws_vpc.main.id
+  name        = "allow_web"
+  description = "Allow HTTP and SSH traffic"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 80
@@ -137,4 +138,42 @@ resource "aws_security_group" "web_sg" {
   tags = {
     Name = "Web Security Group"
   }
+}
+
+resource "aws_network_acl" "public_nacl" {
+  vpc_id     = aws_vpc.main.id
+  subnet_ids = [aws_subnet.public_subnet.id] # Applies to every instance in this subnet
+
+  # Rule 100: Allow HTTP Inbound
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 80
+    to_port    = 80
+  }
+
+  # Rule 200: DENY a specific malicious IP
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 50 # Lower number = higher priority. Evaluated before rule 100.
+    action     = "deny"
+    cidr_block = "203.0.113.5/32"
+    from_port  = 0
+    to_port    = 65535
+  }
+
+  # IMPORTANT: Stateless Outbound rule
+  # Without this, the server can't send the webpage back to the user!
+  egress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 1024
+    to_port    = 65535 # Ephemeral ports for return traffic
+  }
+
+  tags = { Name = "MainSubnetNACL" }
 }
