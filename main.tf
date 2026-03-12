@@ -58,3 +58,42 @@ resource "aws_route_table_association" "public_rt_association" {
   route_table_id = aws_route_table.public_rt.id
   subnet_id      = aws_subnet.public_subnet.id
 }
+
+# Elastic IP (A permanent public phone number for our NAT)
+resource "aws_eip" "nat" {
+  domain = "vpc" # Tells AWS this IP is for use inside a VPC
+}
+
+# NAT Gateway (The "One-Way Mirror")
+resource "aws_nat_gateway" "main_nat" {
+  allocation_id = aws_eip.nat.id              # Give it the EIP
+  subnet_id     = aws_subnet.public_subnet.id # MUST be in a PUBLIC subnet
+  tags = {
+    Name = "Main NAT"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.man_igw]
+
+}
+
+# Private route table
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "Private Route Table"
+  }
+}
+
+resource "aws_route" "private_nat_route" {
+  route_table_id         = aws_route_table.private_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.main_nat.id
+}
+
+resource "aws_route_table_association" "private_rt_association" {
+  route_table_id = aws_route_table.private_rt.id
+  subnet_id      = aws_subnet.private_subnet.id
+}
