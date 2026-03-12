@@ -139,10 +139,8 @@ resource "aws_vpc_security_group_ingress_rule" "allow_http" {
 
 resource "aws_vpc_security_group_egress_rule" "allow_all" {
   security_group_id = aws_security_group.web_sg.id
-  from_port         = 0
-  to_port           = 0
-  ip_protocol       = "-1"        # "-1" means ALL protocols
-  cidr_ipv4         = "0.0.0.0/0" # Allow the server to talk to the internet
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
     Name = "Allow outbound All"
@@ -210,3 +208,51 @@ resource "aws_vpc_security_group_ingress_rule" "web_to_db" {
   to_port                      = 5432
   ip_protocol                  = "tcp"
 }
+
+#  Create the S3 Gateway Endpoint
+resource "aws_vpc_endpoint" "s3_gw" {
+  vpc_id          = aws_vpc.main.id
+  service_name    = "com.amazonaws.us-east-2.s3"
+  route_table_ids = [aws_route_table.private_rt.id]
+
+  tags = {
+    Name = "S3-Gateway"
+  }
+}
+
+# #  Create the Interface Endpoint for Secrets Manager
+# resource "aws_vpc_endpoint" "secrets_manager" {
+#   vpc_id            = aws_vpc.main.id
+#   service_name      = "com.amazonaws.us-east-2.secretsmanager"
+#   vpc_endpoint_type = "Interface"
+
+#   #  Which subnets should have the "Network Card"?
+#   subnet_ids = [aws_subnet.private_subnet.id]
+
+#   # Security: Who can talk to this Endpoint?
+#   security_group_ids = [aws_security_group.endpoint_sg.id]
+
+#   # Enable Private DNS
+#   private_dns_enabled = true
+
+#   tags = {
+#     Name = "Endpoint Secret Manager"
+#   }
+# }
+
+# resource "aws_security_group" "endpoint_sg" {
+#   name        = "endpoint-sg"
+#   description = "Allow endpoint interface traffic"
+#   vpc_id      = aws_vpc.main.id
+
+#   ingress {
+#     from_port   = 443
+#     to_port     = 443
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   tags = {
+#     Name = "Endpoint interface sg"
+#   }
+# }
