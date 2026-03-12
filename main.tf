@@ -97,3 +97,44 @@ resource "aws_route_table_association" "private_rt_association" {
   route_table_id = aws_route_table.private_rt.id
   subnet_id      = aws_subnet.private_subnet.id
 }
+
+# 1. VPC Flow Logs (The Security Camera)
+resource "aws_flow_log" "vpc_log" {
+  log_destination      = aws_s3_bucket.vpc_log_bucket.arn
+  log_destination_type = "s3"
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.main.id
+
+  tags = {
+    Name = "VPC Flow Logs"
+  }
+}
+
+# S3 bucket to store vpc flow logs
+resource "aws_s3_bucket" "vpc_log_bucket" {
+  bucket = "vpc-log-bucket-12032026"
+}
+
+#  Security Group (The server "Guest List")
+resource "aws_security_group" "web_sg" {
+  name   = "allow_web"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow anyone to see the website
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"          # "-1" means ALL protocols
+    cidr_blocks = ["0.0.0.0/0"] # Allow the server to talk to the internet
+  }
+
+  tags = {
+    Name = "Web Security Group"
+  }
+}
