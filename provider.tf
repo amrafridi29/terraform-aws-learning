@@ -15,7 +15,7 @@ provider "aws" {
   default_tags {
     tags = {
       Environment = "Learning"
-      Project     = "Project 1 (EC2 Public)"
+      Project     = "Project"
       Team        = "DevOps"
     }
   }
