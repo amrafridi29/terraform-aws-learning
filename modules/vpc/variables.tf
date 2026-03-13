@@ -12,3 +12,8 @@ variable "availability_zones" {
   description = "Availability zones"
   type        = list(string)
 }
+
+variable "private_subnet_cidr_blocks" {
+  description = "Priate subnets cidr blocks ip addresses"
+  type        = list(string)
+}

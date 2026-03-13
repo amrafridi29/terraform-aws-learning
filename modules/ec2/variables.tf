@@ -8,13 +8,22 @@ variable "instance_type" {
   type        = string
 }
 
-variable "subnet_id" {
+variable "public_subnet_id" {
   description = "Public subnet id"
+  type        = string
+}
+
+variable "private_subnet_id" {
+  description = "Pivate subnet id"
   type        = string
 }
 
 variable "vpc_security_groups" {
   description = "VPC security groups"
   type        = list(string)
+}
 
+variable "key_name" {
+  description = "SSH key name"
+  type        = string
 }
