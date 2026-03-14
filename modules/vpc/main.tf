@@ -49,3 +49,24 @@ resource "aws_internet_gateway" "igw" {
     Name = "${var.name}-igw"
   }
 }
+
+# NAT Gateway EIP
+resource "aws_eip" "nat" {
+  count  = length(var.public_subnets)
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.name}-eip"
+  }
+}
+
+resource "aws_nat_gateway" "nat" {
+  count         = length(var.public_subnets)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
+  depends_on    = [aws_internet_gateway.igw]
+
+  tags = {
+    Name = "${var.name}-nat-${count.index + 1}"
+  }
+}
