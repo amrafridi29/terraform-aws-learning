@@ -113,3 +113,17 @@ resource "aws_route_table_association" "private_association" {
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id
 }
+
+resource "aws_route_table" "db" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-db-rt"
+  }
+}
+
+resource "aws_route_table_association" "db_association" {
+  count          = length(aws_subnet.db)
+  subnet_id      = aws_subnet.db[count.index].id
+  route_table_id = aws_route_table.db.id
+}
