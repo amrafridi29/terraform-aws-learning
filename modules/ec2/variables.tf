@@ -18,8 +18,13 @@ variable "private_subnet_id" {
   type        = string
 }
 
-variable "vpc_security_groups" {
-  description = "VPC security groups"
+variable "vpc_public_security_groups" {
+  description = "VPC public security groups"
+  type        = list(string)
+}
+
+variable "vpc_private_security_groups" {
+  description = "VPC private security groups"
   type        = list(string)
 }
 

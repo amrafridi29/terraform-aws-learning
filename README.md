@@ -230,3 +230,25 @@ You will learn:
 # 👨‍💻 Author
 
 Terraform AWS Learning Series
+
+# 1. SSH Connect
+
+```
+-- Connect to public EC2 instance
+sh -i test.pem ec2-user@<public-instance-ip>
+
+-- Connect to private instance via public instance (Bastion)
+sh -i test.pem -J ec2-user@1<public-instance-ip> ec2-user@<private-instance-ip>
+
+```
+
+# 2. SSH Connect
+
+```bash
+scp -i test.pem test.pem ec2-user@<public-instance-ip>:/home/ec2-user/
+
+sh -i test.pem ec2-user@<public-instance-ip>
+
+sh -i test.pem ec2-user@<private-instance-ip>
+
+```

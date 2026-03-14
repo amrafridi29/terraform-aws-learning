@@ -6,7 +6,11 @@ variable "alb_security_groups" {
   type = list(string)
 }
 
-variable "instance_ids" {
+variable "web_instance_ids" {
+  type = list(string)
+}
+
+variable "server_instance_ids" {
   type = list(string)
 }
 

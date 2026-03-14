@@ -2,7 +2,7 @@ resource "aws_instance" "web" {
   ami                    = var.ami
   instance_type          = var.instance_type
   subnet_id              = var.public_subnet_id
-  vpc_security_group_ids = var.vpc_security_groups
+  vpc_security_group_ids = var.vpc_public_security_groups
   key_name               = var.key_name
 
   user_data = file("${path.module}/user_data.sh")
@@ -16,9 +16,10 @@ resource "aws_instance" "server" {
   ami                         = var.ami
   instance_type               = var.instance_type
   subnet_id                   = var.private_subnet_id
-  vpc_security_group_ids      = var.vpc_security_groups
+  vpc_security_group_ids      = var.vpc_private_security_groups
   key_name                    = var.key_name
   associate_public_ip_address = false
+  user_data                   = file("${path.module}/user_data_express.sh")
 
   tags = {
     Name = "Server Instance"

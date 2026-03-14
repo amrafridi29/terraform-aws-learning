@@ -63,6 +63,39 @@ EC2 #1       EC2 #2
 
 ```
 
+# Project Structure
+
+```
+├── backend.tf
+├── graph.png
+├── main.tf
+├── modules
+│   ├── alb
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── ec2
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   ├── user_data_express.sh
+│   │   ├── user_data.sh
+│   │   └── variables.tf
+│   ├── sg
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variable.tf
+│   └── vpc
+│       ├── main.tf
+│       ├── outputs.tf
+│       └── variables.tf
+├── outputs.tf
+├── Project2Readme.md
+├── Project3.md
+├── provider.tf
+├── README.md
+└── variables.tf
+```
+
 # Web Server Setup
 
 Each EC2 will install Nginx automatically using user_data.
