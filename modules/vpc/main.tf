@@ -41,3 +41,11 @@ resource "aws_subnet" "db" {
     Name = "${var.name}-db-${count.index + 1}"
   }
 }
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.this.id
+
+  tags = {
+    Name = "${var.name}-igw"
+  }
+}
