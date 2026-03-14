@@ -33,3 +33,24 @@ variable "db_subnets" {
   type        = list(string)
   default     = ["10.0.5.0/24", "10.0.6.0/24"]
 }
+
+variable "web_ami" {
+  type    = string
+  default = "ami-0b0b78dcacbab728f"
+}
+variable "web_instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+variable "app_ami" {
+  type    = string
+  default = "ami-0b0b78dcacbab728f"
+}
+variable "app_instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+variable "key_name" {
+  type    = string
+  default = "test"
+}
