@@ -22,3 +22,8 @@ variable "private_subnets" {
   type        = list(string)
 }
 
+variable "db_subnets" {
+  description = "Db subnets"
+  type        = list(string)
+}
+
