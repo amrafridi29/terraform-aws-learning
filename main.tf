@@ -31,6 +31,13 @@ module "ec2" {
   key_name = var.key_name
 }
 
+module "alb" {
+  source         = "./modules/alb"
+  name           = "prod"
+  public_subnets = module.vpc.public_subnets
+  alb_sg_id      = module.security_groups.alb_sg_id
+}
+
 # module "rds" {
 #   source     = "./modules/rds"
 #   name       = "prod-rds"
