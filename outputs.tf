@@ -33,4 +33,7 @@ output "app_instance_ids" {
 output "web_public_ips" {
   value = module.ec2.web_public_ips
 }
+# output "rds_endpoint" {
+#   value = module.rds.rds_endpoint
+# }
 

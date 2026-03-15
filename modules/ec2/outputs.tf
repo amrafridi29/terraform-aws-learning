@@ -1,9 +1,11 @@
 output "web_instance_ids" {
-  value = aws_instance.web[*].id
+  value = [for instance in aws_instance.web : instance.id]
 }
+
 output "app_instance_ids" {
-  value = aws_instance.app[*].id
+  value = [for instance in aws_instance.app : instance.id]
 }
+
 output "web_public_ips" {
-  value = aws_instance.web[*].public_ip
+  value = [for instance in aws_instance.web : instance.public_ip]
 }

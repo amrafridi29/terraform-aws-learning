@@ -54,3 +54,12 @@ variable "key_name" {
   type    = string
   default = "test"
 }
+
+variable "db_username" {
+  type    = string
+  default = "root"
+}
+variable "db_password" {
+  type    = string
+  default = "#123AbcD"
+}

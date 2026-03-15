@@ -30,3 +30,12 @@ module "ec2" {
 
   key_name = var.key_name
 }
+
+# module "rds" {
+#   source     = "./modules/rds"
+#   name       = "prod-rds"
+#   db_subnets = module.vpc.db_subnets
+#   db_sg_id   = module.security_groups.db_sg_id
+#   username   = var.db_username
+#   password   = var.db_password
+# }
