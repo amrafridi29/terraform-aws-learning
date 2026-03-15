@@ -32,10 +32,12 @@ module "ec2" {
 }
 
 module "alb" {
-  source         = "./modules/alb"
-  name           = "prod"
-  public_subnets = module.vpc.public_subnets
-  alb_sg_id      = module.security_groups.alb_sg_id
+  source           = "./modules/alb"
+  name             = "prod"
+  public_subnets   = module.vpc.public_subnets
+  alb_sg_id        = module.security_groups.alb_sg_id
+  vpc_id           = module.vpc.vpc_id
+  web_instance_ids = module.ec2.web_instance_ids
 }
 
 # module "rds" {
